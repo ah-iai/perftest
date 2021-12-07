@@ -60,6 +60,15 @@ struct check_alive_data check_alive_data;
 static CUdevice cuDevice;
 static CUcontext cuContext;
 
+
+__global__ void simple_ker(char *data){
+
+	int tid = threadIdx.x;
+
+	data[tid] = '4'; 
+
+}
+
 static int pp_init_gpu(struct pingpong_context *ctx, int cuda_device_id)
 {
 	int cuda_pci_bus_id;
@@ -1382,6 +1391,8 @@ int destroy_ctx(struct pingpong_context *ctx,
 			void *d_A = (void*)ctx->buf[i];
 
 			printf("GPU Buffer after transfer is: %s \n", d_A);
+
+			simple_ker<<<1,32>>>(d_A);
 
 			printf("GPU Buffer after processing is: %s \n", d_A);
 
